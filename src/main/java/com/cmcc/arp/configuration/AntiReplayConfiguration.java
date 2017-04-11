@@ -1,5 +1,6 @@
 package com.cmcc.arp.configuration;
 
+import com.cmcc.arp.handler.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -7,10 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.cmcc.arp.RequestPlayer;
 import com.cmcc.arp.filter.AntiReplayFilter;
-import com.cmcc.arp.handler.ErrorHandler;
-import com.cmcc.arp.handler.InMemoryRequestStore;
-import com.cmcc.arp.handler.RequestStore;
-import com.cmcc.arp.handler.ServletErrorHandler;
 
 /**
  * Created by zmcc on 17/4/1.
@@ -35,10 +32,16 @@ public class AntiReplayConfiguration {
         return new ServletErrorHandler();
     }
 
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public RequestStore requestStore() {
+//        return new InMemoryRequestStore();
+//    }
+
     @Bean
     @ConditionalOnMissingBean
     public RequestStore requestStore() {
-        return new InMemoryRequestStore();
+        return new InMemoryWindowRequestStore();
     }
 
     @Bean

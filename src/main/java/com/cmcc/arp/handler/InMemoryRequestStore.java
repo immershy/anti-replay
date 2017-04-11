@@ -9,11 +9,15 @@ public class InMemoryRequestStore implements RequestStore {
 
     protected HashSet<String> set = new HashSet<String>(128);
 
-    private long lastSaveTime = System.currentTimeMillis();
+    protected long lastSaveTime = System.currentTimeMillis();
+
+    public static final int MAX_SIZE = 100000;
+
+    public static final long MAX_STORE_TIME = 12 * 60 * 60 * 1000;
 
     // TODO 并发
     public void store(String value) {
-        if ((System.currentTimeMillis() - lastSaveTime) > 12 * 60 * 60 * 1000) {
+        if (tooLong(lastSaveTime) || tooLarge(set)) {
             lastSaveTime = System.currentTimeMillis();
             set = new HashSet<String>(128);
         }
@@ -22,5 +26,13 @@ public class InMemoryRequestStore implements RequestStore {
 
     public Boolean contains(String value) {
         return set.contains(value);
+    }
+
+    private Boolean tooLong(long time) {
+        return (System.currentTimeMillis() - time) > MAX_STORE_TIME;
+    }
+
+    private Boolean tooLarge(HashSet<String> set) {
+        return set != null && set.size() > MAX_SIZE;
     }
 }
